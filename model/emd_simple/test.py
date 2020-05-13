@@ -14,6 +14,7 @@ import dataset
 import misc_utils
 
 if_set_nms = True
+top_k = 2
 
 def eval_all(args):
     # model_path
@@ -66,31 +67,40 @@ def inference(model_file, device, records, result_queue):
         net.inputs["image"].set_value(image.astype(np.float32))
         net.inputs["im_info"].set_value(im_info)
         pred_boxes = val_func().numpy()
+        num_tag = config.num_classes - 1
+        target_shape = (pred_boxes.shape[0]//num_tag//top_k, top_k)
+        pred_tags = (np.arange(num_tag) + 1).reshape(-1,1)
+        pred_tags = np.tile(pred_tags, target_shape).reshape(-1,1)
         # nms
         if if_set_nms:
             from set_nms_utils import set_cpu_nms
-            n = pred_boxes.shape[0] // 2
-            idents = np.tile(np.arange(n)[:,None], (1, 2)).reshape(-1, 1)
+            n = pred_boxes.shape[0] // top_k
+            idents = np.tile(np.arange(n)[:,None], (1, top_k)).reshape(-1, 1)
             pred_boxes = np.hstack((pred_boxes, idents))
             keep = pred_boxes[:, -2] > 0.05
             pred_boxes = pred_boxes[keep]
+            pred_tags = pred_tags[keep]
             keep = set_cpu_nms(pred_boxes, 0.5)
             pred_boxes = pred_boxes[keep][:, :-1]
+            pred_tags = pred_tags[keep].flatten()
         else:    
             from set_nms_utils import cpu_nms
             keep = pred_boxes[:, -1] > 0.05
             pred_boxes = pred_boxes[keep]
+            pred_tags = pred_tags[keep]
             keep = cpu_nms(pred_boxes, 0.5)
             pred_boxes = pred_boxes[keep]
+            pred_tags = pred_tags[keep].flatten()
         result_dict = dict(ID=ID, height=int(im_info[0, -2]), width=int(im_info[0, -1]),
-                dtboxes=boxes_dump(pred_boxes, False),
-                gtboxes=boxes_dump(gt_boxes, True))
+                dtboxes=boxes_dump(pred_boxes, pred_tags, False),
+                gtboxes=boxes_dump(gt_boxes, None, True))
         result_queue.put_nowait(result_dict)
 
-def boxes_dump(boxes, is_gt):
+def boxes_dump(boxes, pred_tags, is_gt):
     result = []
     boxes = boxes.tolist()
-    for box in boxes:
+    for idx in range(len(boxes)):
+        box = boxes[idx]
         if is_gt:
             box_dict = {}
             box_dict['box'] = [box[0], box[1], box[2]-box[0], box[3]-box[1]]
@@ -98,7 +108,7 @@ def boxes_dump(boxes, is_gt):
         else:
             box_dict = {}
             box_dict['box'] = [box[0], box[1], box[2]-box[0], box[3]-box[1]]
-            box_dict['tag'] = 1
+            box_dict['tag'] = int(pred_tags[idx])
             box_dict['score'] = box[-1]
         result.append(box_dict)
     return result

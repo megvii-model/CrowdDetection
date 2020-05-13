@@ -22,7 +22,6 @@ def eval_all(args):
             'epoch_{}.pkl'.format(args.resume_weights))
     assert os.path.exists(model_file)
     # load data
-    #records = misc_utils.load_json_lines(config.eval_source)[:10]
     records = misc_utils.load_json_lines(config.eval_source)
     # multiprocessing
     num_records = len(records)
@@ -65,21 +64,28 @@ def inference(model_file, device, records, result_queue):
         net.inputs["image"].set_value(image.astype(np.float32))
         net.inputs["im_info"].set_value(im_info)
         pred_boxes = val_func().numpy()
+        num_tag = config.num_classes - 1
+        target_shape = (pred_boxes.shape[0]//num_tag, 1)
+        pred_tags = (np.arange(num_tag) + 1).reshape(-1,1)
+        pred_tags = np.tile(pred_tags, target_shape).reshape(-1,1)
         # nms
         from set_nms_utils import cpu_nms
         keep = pred_boxes[:, -1] > 0.05
         pred_boxes = pred_boxes[keep]
+        pred_tags = pred_tags[keep]
         keep = cpu_nms(pred_boxes, 0.5)
         pred_boxes = pred_boxes[keep]
+        pred_tags = pred_tags[keep].flatten()
         result_dict = dict(ID=ID, height=int(im_info[0, -2]), width=int(im_info[0, -1]),
-                dtboxes=boxes_dump(pred_boxes, False),
-                gtboxes=boxes_dump(gt_boxes, True))
+                dtboxes=boxes_dump(pred_boxes, pred_tags, False),
+                gtboxes=boxes_dump(gt_boxes, None, True))
         result_queue.put_nowait(result_dict)
 
-def boxes_dump(boxes, is_gt):
+def boxes_dump(boxes, pred_tags, is_gt):
     result = []
     boxes = boxes.tolist()
-    for box in boxes:
+    for idx in range(len(boxes)):
+        box = boxes[idx]
         if is_gt:
             box_dict = {}
             box_dict['box'] = [box[0], box[1], box[2]-box[0], box[3]-box[1]]
@@ -87,7 +93,7 @@ def boxes_dump(boxes, is_gt):
         else:
             box_dict = {}
             box_dict['box'] = [box[0], box[1], box[2]-box[0], box[3]-box[1]]
-            box_dict['tag'] = 1
+            box_dict['tag'] = int(pred_tags[idx])
             box_dict['score'] = box[-1]
         result.append(box_dict)
     return result

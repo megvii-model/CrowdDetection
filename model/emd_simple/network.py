@@ -92,9 +92,9 @@ class RCNN(M.Module):
             M.init.fill_(l.bias, 0)
         # box predictor
         self.emd_pred_cls_0 = M.Linear(1024, config.num_classes)
-        self.emd_pred_delta_0 = M.Linear(1024, (config.num_classes - 1) * 4)
+        self.emd_pred_delta_0 = M.Linear(1024, config.num_classes * 4)
         self.emd_pred_cls_1 = M.Linear(1024, config.num_classes)
-        self.emd_pred_delta_1 = M.Linear(1024, (config.num_classes - 1) * 4)
+        self.emd_pred_delta_1 = M.Linear(1024, config.num_classes * 4)
         for l in [self.emd_pred_cls_0, self.emd_pred_cls_1]:
             M.init.normal_(l.weight, std=0.01)
             M.init.fill_(l.bias, 0)
@@ -133,22 +133,32 @@ class RCNN(M.Module):
             loss_dict['loss_rcnn_emd'] = loss_emd
             return loss_dict
         else:
-            pred_scores_0 = F.softmax(pred_emd_pred_cls_0)
-            pred_scores_1 = F.softmax(pred_emd_pred_cls_1)
-            pred_bbox_0 = restore_bbox(rcnn_rois[:, 1:5], pred_emd_pred_delta_0, True)
-            pred_bbox_1 = restore_bbox(rcnn_rois[:, 1:5], pred_emd_pred_delta_1, True)
-            pred_bbox_0 = F.concat([pred_bbox_0, pred_scores_0[:, 1].reshape(-1,1)], axis=1)
-            pred_bbox_1 = F.concat([pred_bbox_1, pred_scores_1[:, 1].reshape(-1,1)], axis=1)
+            pred_scores_0 = F.softmax(pred_emd_pred_cls_0)[:, 1:].reshape(-1, 1)
+            pred_scores_1 = F.softmax(pred_emd_pred_cls_1)[:, 1:].reshape(-1, 1)
+            pred_delta_0 = pred_emd_pred_delta_0[:, 4:].reshape(-1, 4)
+            pred_delta_1 = pred_emd_pred_delta_1[:, 4:].reshape(-1, 4)
+            target_shape = (rcnn_rois.shapeof()[0], config.num_classes - 1, 4)
+            base_rois = F.add_axis(rcnn_rois[:, 1:5], 1).broadcast(target_shape).reshape(-1, 4)
+            pred_bbox_0 = restore_bbox(base_rois, pred_delta_0, True)
+            pred_bbox_1 = restore_bbox(base_rois, pred_delta_1, True)
+            pred_bbox_0 = F.concat([pred_bbox_0, pred_scores_0], axis=1)
+            pred_bbox_1 = F.concat([pred_bbox_1, pred_scores_1], axis=1)
+            #[{head0, pre1, tag1}, {head1, pre1, tag1}, {head0, pre1, tag2}, ...]
             pred_bbox = F.concat((pred_bbox_0, pred_bbox_1), axis=1).reshape(-1,5)
             return pred_bbox
 
 def emd_loss(p_b0, p_c0, p_b1, p_c1, targets, labels):
     pred_box = F.concat([p_b0, p_b1], axis=1).reshape(-1, p_b0.shapeof()[-1])
+    pred_box = pred_box.reshape(-1, config.num_classes, 4)
     pred_score = F.concat([p_c0, p_c1], axis=1).reshape(-1, p_c0.shapeof()[-1])
     targets = targets.reshape(-1, 4)
-    labels = labels.reshape(-1)
+    labels = labels.reshape(-1).astype(np.int32)
     fg_masks = F.greater(labels, 0)
     non_ignore_masks = F.greater_equal(labels, 0)
+    # mulitple class to one
+    indexing_label = (labels * fg_masks).reshape(-1,1)
+    indexing_label = indexing_label.broadcast((labels.shapeof()[0], 4))
+    pred_box = F.indexing_one_hot(pred_box, indexing_label, 1)
     # loss for regression
     loss_box_reg = smooth_l1_loss(
         pred_box,

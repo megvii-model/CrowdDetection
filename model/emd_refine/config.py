@@ -26,7 +26,7 @@ class Config:
         os.makedirs(output_dir)
     model_dir = os.path.join(output_dir, 'model_dump')
     eval_dir = os.path.join(output_dir, 'eval_dump')
-    pretrain_weight = '/home/model/resnet50_fbaug_76254_4e14b7d1.pkl'
+    pretrain_weight = '/home/chuxuangeng/workspace/total_static/resnet50_fbaug_76254_4e14b7d1.pkl'
 
     # ----------data config---------- #
     image_mean = np.array([103.530, 116.280, 123.675])

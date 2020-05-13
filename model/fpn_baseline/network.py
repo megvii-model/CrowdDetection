@@ -92,7 +92,7 @@ class RCNN(M.Module):
             M.init.fill_(l.bias, 0)
         # box predictor
         self.pred_cls = M.Linear(1024, config.num_classes)
-        self.pred_delta = M.Linear(1024, (config.num_classes - 1) * 4)
+        self.pred_delta = M.Linear(1024, config.num_classes * 4)
         M.init.normal_(self.pred_cls.weight, std=0.01)
         M.init.normal_(self.pred_delta.weight, std=0.001)
         for l in [self.pred_cls, self.pred_delta]:
@@ -113,7 +113,12 @@ class RCNN(M.Module):
         if self.training:
             # loss for regression
             labels = labels.astype(np.int32).reshape(-1)
+            # mulitple class to one
             pos_masks = labels > 0
+            pred_delta = pred_delta.reshape(-1, config.num_classes, 4)
+            indexing_label = (labels * pos_masks).reshape(-1,1)
+            indexing_label = indexing_label.broadcast((labels.shapeof()[0], 4))
+            pred_delta = F.indexing_one_hot(pred_delta, indexing_label, 1)
             localization_loss = smooth_l1_loss(
                 pred_delta,
                 bbox_targets,
@@ -133,9 +138,12 @@ class RCNN(M.Module):
             loss_dict['loss_rcnn_loc'] = loss_rcnn_loc
             return loss_dict
         else:
-            pred_scores = F.softmax(pred_cls)
-            pred_bbox = restore_bbox(rcnn_rois[:, 1:5], pred_delta, True)
-            pred_bbox = F.concat([pred_bbox, pred_scores[:, 1].reshape(-1,1)], axis=1)
+            pred_scores = F.softmax(pred_cls)[:, 1:].reshape(-1, 1)
+            pred_delta = pred_delta[:, 4:].reshape(-1, 4)
+            target_shape = (rcnn_rois.shapeof()[0], config.num_classes - 1, 4)
+            base_rois = F.add_axis(rcnn_rois[:, 1:5], 1).broadcast(target_shape).reshape(-1, 4)
+            pred_bbox = restore_bbox(base_rois, pred_delta, True)
+            pred_bbox = F.concat([pred_bbox, pred_scores], axis=1)
             return pred_bbox
 
 def restore_bbox(rois, deltas, unnormalize=True):
