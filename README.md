@@ -63,8 +63,8 @@ We use pre-trained model from MegEngine ModelHub: https://data.megengine.org.cn/
 All models are based on ResNet-50 FPN.
 | | AP | MR | JI | Model
 | --- | --- | --- | --- | --- |
-| FPN Baseline | 0.8660 | 0.4239 | 0.7951 | [meg_fpn_baseline.pkl](https://drive.google.com/open?id=1WO1t1IpXZNEucaZy8GzQnOpnr43TiUJ1)|
-| EMD Simple | 0.9006 | 0.4172 | 0.8221 | [meg_emd_simple.pkl](https://drive.google.com/open?id=16atZomWD8zf4zMkFbjCm6Flm_vp0ai6G)|
+| FPN Baseline | 0.8662 | 0.4227 | 0.7957 | [meg_fpn_baseline.pkl](https://drive.google.com/open?id=1hiifwSNIDNcg46lIqpCS_-MaJDPfH9uj)|
+| EMD Simple | 0.8996 | 0.4171 | 0.8223 | [meg_emd_simple.pkl](https://drive.google.com/open?id=1J6dlER_WkzGD0hjdvwjQDbHqpswOQoQy)|
 | EMD with RM | 0.9034 | 0.4110 | 0.8273 | [meg_emd_refine.pkl](https://drive.google.com/open?id=1VyFFKcY4Lu6KabHtLeAAnIdzySSHiESH) |
 
 # Contact
