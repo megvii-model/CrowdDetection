@@ -22,11 +22,7 @@ def inference(args):
         pred_boxes = net(net.inputs)
         return pred_boxes
     # model path
-    saveDir = config.model_dir
-    evalDir = config.eval_dir
-    misc_utils.ensure_dir(evalDir)
-    model_file = os.path.join(saveDir,
-            'epoch_{}.pkl'.format(args.resume_weights))
+    model_file = args.resume_weights
     assert os.path.exists(model_file)
     # load model
     net = network.Network()
@@ -65,7 +61,7 @@ def inference(args):
     pred_tags_name = np.array(config.class_names)[pred_tags]
     visual_utils.draw_boxes(ori_image, pred_boxes[:, :-1], pred_boxes[:, -1], pred_tags_name)
     name = args.img_path.split('/')[-1].split('.')[-2]
-    fpath = '/data/jupyter/{}.png'.format(name)
+    fpath = 'result.jpg'
     cv2.imwrite(fpath, ori_image)
 
 def get_data(path):
@@ -101,7 +97,7 @@ def run_inference():
     parser = argparse.ArgumentParser()
     parser.add_argument('--resume_weights', '-r', default=None, type=str)
     parser.add_argument('--img_path', '-i', default=None, type=str)
-    parser.add_argument('--thresh', '-t', default=0.05, type=float)
+    parser.add_argument('--thresh', '-t', default=0.3, type=float)
     args = parser.parse_args()
     inference(args)
 
