@@ -11,6 +11,7 @@ from config import config
 import dataset
 import network
 import misc_utils
+import visual_utils
 
 if_set_nms = True
 top_k = 2
@@ -32,7 +33,7 @@ def inference(args):
     net.eval()
     check_point = mge.load(model_file)
     net.load_state_dict(check_point['state_dict'])
-    image, im_info = get_data(args.img_path)
+    ori_image, image, im_info = get_data(args.img_path)
     net.inputs["image"].set_value(image.astype(np.float32))
     net.inputs["im_info"].set_value(im_info)
     pred_boxes = val_func().numpy()
@@ -46,24 +47,26 @@ def inference(args):
         n = pred_boxes.shape[0] // top_k
         idents = np.tile(np.arange(n)[:,None], (1, top_k)).reshape(-1, 1)
         pred_boxes = np.hstack((pred_boxes, idents))
-        keep = pred_boxes[:, -2] > 0.05
+        keep = pred_boxes[:, -2] > args.thresh
         pred_boxes = pred_boxes[keep]
         pred_tags = pred_tags[keep]
         keep = set_cpu_nms(pred_boxes, 0.5)
         pred_boxes = pred_boxes[keep][:, :-1]
-        pred_tags = pred_tags[keep].flatten()
+        pred_tags = pred_tags[keep]
     else:
         from set_nms_utils import cpu_nms
-        keep = pred_boxes[:, -1] > 0.05
+        keep = pred_boxes[:, -1] > args.thresh
         pred_boxes = pred_boxes[keep]
         pred_tags = pred_tags[keep]
         keep = cpu_nms(pred_boxes, 0.5)
         pred_boxes = pred_boxes[keep]
-        pred_tags = pred_tags[keep].flatten()
-    result_dict = dict(height=int(im_info[0, -2]), width=int(im_info[0, -1]),
-        dtboxes=boxes_dump(pred_boxes, pred_tags))
+        pred_tags = pred_tags[keep]
+    pred_tags = pred_tags.astype(np.int32).flatten()
+    pred_tags_name = np.array(config.class_names)[pred_tags]
+    visual_utils.draw_boxes(ori_image, pred_boxes[:, :-1], pred_boxes[:, -1], pred_tags_name)
     name = args.img_path.split('/')[-1].split('.')[-2]
-    misc_utils.save_json_lines([result_dict], '{}.json'.format(name))
+    fpath = '/data/jupyter/{}.png'.format(name)
+    cv2.imwrite(fpath, ori_image)
 
 def get_data(path):
     image = cv2.imread(path, cv2.IMREAD_COLOR)
@@ -80,24 +83,13 @@ def get_data(path):
         dtype=np.float32)
     im_info = np.array([height, width, scale, original_height, original_width],
         dtype=np.float32)[None, :]
-    return transposed_img, im_info
-
-def boxes_dump(boxes, pred_tags):
-    result = []
-    boxes = boxes.tolist()
-    for idx in range(len(boxes)):
-        box = boxes[idx]
-        box_dict = {}
-        box_dict['box'] = [box[0], box[1], box[2]-box[0], box[3]-box[1]]
-        box_dict['tag'] = int(pred_tags[idx])
-        box_dict['score'] = box[-1]
-        result.append(box_dict)
-    return result
+    return image, transposed_img, im_info
 
 def run_inference():
     parser = argparse.ArgumentParser()
     parser.add_argument('--resume_weights', '-r', default=None, type=str)
     parser.add_argument('--img_path', '-i', default=None, type=str)
+    parser.add_argument('--thresh', '-t', default=0.05, type=float)
     args = parser.parse_args()
     inference(args)
 
