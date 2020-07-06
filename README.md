@@ -66,6 +66,8 @@ All models are based on ResNet-50 FPN.
 | FPN Baseline | 0.8662 | 0.4227 | 0.7957 | [meg_fpn_baseline.pkl](https://drive.google.com/open?id=1hiifwSNIDNcg46lIqpCS_-MaJDPfH9uj)|
 | EMD Simple | 0.8996 | 0.4171 | 0.8223 | [meg_emd_simple.pkl](https://drive.google.com/open?id=1J6dlER_WkzGD0hjdvwjQDbHqpswOQoQy)|
 | EMD with RM | 0.9034 | 0.4110 | 0.8273 | [meg_emd_refine.pkl](https://drive.google.com/open?id=1VyFFKcY4Lu6KabHtLeAAnIdzySSHiESH) |
+| Cascade FPN Baseline | 0.8624 | 0.4016 | 0.8037 | [meg_cas_fpn.pkl](https://drive.google.com/file/d/16XQdDL5cZd4FCCwAbfMi2IFQ3SN0Dbaw/view?usp=sharing)|
+| Cascade EMD Simple | 0.9064 | 0.3865 | 0.8392 | [meg_cas_emd.pkl](https://drive.google.com/file/d/1Uy5gnGAU18TcCWEToc9t2uvMhuPd__dF/view?usp=sharing)|
 
 # Contact
 
