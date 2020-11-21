@@ -40,7 +40,15 @@ year = {2020}
 	```
 	* Please note that in some environments you may need to modify setup.sh!
 
-4. Steps to run:
+4. Inference (GPU required):
+	```
+	cd model/emd_simple
+	python3 inference.py -r path/to/meg_emd_simple.pkl -i ../../assets/running_1.jpg
+	```
+	you will get `result.jpg` like this
+	<img width=60% src="assets/result_1.jpg"/>
+
+5. Steps to train and test:
     * Step1:  training. More training and testing settings can be set in `config.py`.
 	```
 	python3 train.py

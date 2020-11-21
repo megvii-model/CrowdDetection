@@ -2,22 +2,28 @@
 # This file will seal the nms opr within a better way than lib_nms
 import ctypes
 import struct, os
-from IPython import embed
 from megengine._internal.craniotome import CraniotomeBase
+from megengine.core.tensor import wrap_io_tensor
 import numpy as np
+import traceback
+import warnings
 
-_so_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib_nms.so')
-_so_lib  = ctypes.CDLL(_so_path)
-
-_TYPE_POINTER = ctypes.c_void_p
-_TYPE_POINTER = ctypes.c_void_p
-_TYPE_INT = ctypes.c_int32
-_TYPE_FLOAT = ctypes.c_float
-
-_so_lib.NMSForwardGpu.argtypes = [_TYPE_POINTER, _TYPE_POINTER, _TYPE_POINTER, _TYPE_POINTER, _TYPE_FLOAT, _TYPE_INT, _TYPE_POINTER]
-_so_lib.NMSForwardGpu.restype = _TYPE_INT
-
-_so_lib.CreateHostDevice.restype = _TYPE_POINTER
+try:
+    _so_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib_nms.so')
+    _so_lib  = ctypes.CDLL(_so_path)
+    
+    _TYPE_POINTER = ctypes.c_void_p
+    _TYPE_POINTER = ctypes.c_void_p
+    _TYPE_INT = ctypes.c_int32
+    _TYPE_FLOAT = ctypes.c_float
+    
+    _so_lib.NMSForwardGpu.argtypes = [_TYPE_POINTER, _TYPE_POINTER, _TYPE_POINTER, _TYPE_POINTER, _TYPE_FLOAT, _TYPE_INT, _TYPE_POINTER]
+    _so_lib.NMSForwardGpu.restype = _TYPE_INT
+    
+    _so_lib.CreateHostDevice.restype = _TYPE_POINTER
+except:
+    # traceback.print_exc()
+    warnings.warn("lib_nms.so not loaded. please compile with lib/layers/setup.sh")
 
 class NMSCran(CraniotomeBase):
     __nr_inputs__ = 1
@@ -54,7 +60,6 @@ class NMSCran(CraniotomeBase):
         mask_size = int(nr_box * (nr_box // threadsPerBlock + int((nr_box % threadsPerBlock) > 0)) * 8 / 4)
         return [[output_size], [1], [mask_size]]
 
-from megengine.core.tensor import wrap_io_tensor
 @wrap_io_tensor
 def gpu_nms(box, iou_threshold, max_output):
     keep, num, mask = NMSCran.make(box, iou_threshold=iou_threshold, max_output=max_output)
