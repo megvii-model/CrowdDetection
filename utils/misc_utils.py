@@ -7,13 +7,6 @@ def load_img(image_path):
     img = cv2.imread(image_path, cv2.IMREAD_COLOR)
     return img
 
-def load_img_nori(nori_id, nori_path):
-    import nori2 as nori
-    nr = nori.open(nori_path, 'r')
-    ns = np.fromstring(nr.get(nori_id), dtype=np.uint8)
-    img = cv2.imdecode(ns, cv2.IMREAD_COLOR)
-    return img
-
 def load_json_lines(fpath):
     assert os.path.exists(fpath)
     with open(fpath,'r') as fid:
