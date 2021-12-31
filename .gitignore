@@ -1,1 +1,5 @@
-*.pyc
+*.so
+.DS_Store
+*.sh
+*.md
+*.pth

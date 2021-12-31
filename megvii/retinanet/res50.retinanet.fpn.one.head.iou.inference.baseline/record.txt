@@ -1,0 +1,26 @@
+epoch-50.human
+dtboxes:
+mAP:0.8784, mMR:0.4762, 
+score_thr:0.000, mean_ratio:0.3205, mean_cover:0.3245, mean_recall:0.9688, mean_noise:0.6755, valids:94730, total:335452, gtn:99091
+score_thr:0.100, mean_ratio:0.5592, mean_cover:0.5834, mean_recall:0.9362, mean_noise:0.4166, valids:91246, total:177489, gtn:98957
+score_thr:0.200, mean_ratio:0.7441, mean_cover:0.8325, mean_recall:0.8756, mean_noise:0.1675, valids:84034, total:105167, gtn:98564
+score_thr:0.300, mean_ratio:0.7702, mean_cover:0.9285, mean_recall:0.8180, mean_noise:0.0715, valids:76237, total:82777, gtn:98016
+score_thr:0.400, mean_ratio:0.7289, mean_cover:0.9701, mean_recall:0.7450, mean_noise:0.0299, valids:66418, total:68468, gtn:97291
+score_thr:0.500, mean_ratio:0.6398, mean_cover:0.9850, mean_recall:0.6442, mean_noise:0.0150, valids:53544, total:54113, gtn:96404
+score_thr:0.600, mean_ratio:0.4997, mean_cover:0.9767, mean_recall:0.5006, mean_noise:0.0233, valids:37818, total:37954, gtn:95637
+score_thr:0.700, mean_ratio:0.3205, mean_cover:0.9093, mean_recall:0.3206, mean_noise:0.0907, valids:21738, total:21765, gtn:95090
+score_thr:0.800, mean_ratio:0.1202, mean_cover:0.6171, mean_recall:0.1203, mean_noise:0.3829, valids:7127, total:7135, gtn:94851
+score_thr:0.900, mean_ratio:0.0037, mean_cover:0.0341, mean_recall:0.0037, mean_noise:0.9659, valids:165, total:165, gtn:94801
+epoch-50.human
+dtboxes:
+mAP:0.8784, mMR:0.4762, 
+score_thr:0.000, mean_ratio:0.3205, mean_cover:0.3245, mean_recall:0.9688, mean_noise:0.6755, valids:94730, total:335452, gtn:99091
+score_thr:0.100, mean_ratio:0.5592, mean_cover:0.5834, mean_recall:0.9362, mean_noise:0.4166, valids:91246, total:177489, gtn:98957
+score_thr:0.200, mean_ratio:0.7441, mean_cover:0.8325, mean_recall:0.8756, mean_noise:0.1675, valids:84034, total:105167, gtn:98564
+score_thr:0.300, mean_ratio:0.7702, mean_cover:0.9285, mean_recall:0.8180, mean_noise:0.0715, valids:76237, total:82777, gtn:98016
+score_thr:0.400, mean_ratio:0.7289, mean_cover:0.9701, mean_recall:0.7450, mean_noise:0.0299, valids:66418, total:68468, gtn:97291
+score_thr:0.500, mean_ratio:0.6398, mean_cover:0.9850, mean_recall:0.6442, mean_noise:0.0150, valids:53544, total:54113, gtn:96404
+score_thr:0.600, mean_ratio:0.4997, mean_cover:0.9767, mean_recall:0.5006, mean_noise:0.0233, valids:37818, total:37954, gtn:95637
+score_thr:0.700, mean_ratio:0.3205, mean_cover:0.9093, mean_recall:0.3206, mean_noise:0.0907, valids:21738, total:21765, gtn:95090
+score_thr:0.800, mean_ratio:0.1202, mean_cover:0.6171, mean_recall:0.1203, mean_noise:0.3829, valids:7127, total:7135, gtn:94851
+score_thr:0.900, mean_ratio:0.0037, mean_cover:0.0341, mean_recall:0.0037, mean_noise:0.9659, valids:165, total:165, gtn:94801

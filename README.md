@@ -1,14 +1,14 @@
 # Detection in Crowded Scenes: One Proposal, Multiple Predictions
 
-A pytorch implementation is available on https://github.com/Purkialo/CrowdDet now.
+This is the pytorch re-implementation of the paper "[Detection in Crowded Scenes: One Proposal, Multiple Predictions](https://arxiv.org/abs/2003.09163)" that published in CVPR 2020.
 
-This is the MegEngine implementation of our paper "[Detection in Crowded Scenes: One Proposal, Multiple Predictions](https://openaccess.thecvf.com/content_CVPR_2020/html/Chu_Detection_in_Crowded_Scenes_One_Proposal_Multiple_Predictions_CVPR_2020_paper.html)", https://arxiv.org/abs/2003.09163, published in CVPR 2020.
+<!-- Our method aiming at detecting highly-overlapped instances in crowded scenes. -->
+Object detection in crowded scenes is challenging. When objects gather, they tend to overlap largely with each other, leading to occlusions. Occlusion caused by objects of the same class is called intra-class occlusion, also referred to as crowd occlusion. Object detectors need to determine the locations of different objects in the crowd and accurately delineate their boundaries. Many cases are quite challenging even for human annotators.
 
-Our method aiming at detecting highly-overlapped instances in crowded scenes. 
+To address the aforementioned problem, this paper proposed a schema that one anchor/proposal can predict multiple predictions simultaneously. With this scheme, the predictions of nearby proposals are expected to infer the **same set** of instances, rather than **distinguishing individuals**, which is much easy for the model to learn. Besides, A new NMS method called set NMS is designed to remove the duplicates during the inference time. The EMD loss is devised to obtain the minimal loss during optimization based on the truth that a set of combinations can be obtained between the predictions and groundtruth boxes. Therefore, the combination that produces the minimal loss can be chosen to better optimize the model during training. Additionally, the proposed schema can be deployed on the mainstream detectors such as [Cascade RCNN](https://arxiv.org/pdf/1712.00726.pdf), [FPN](https://arxiv.org/pdf/1612.03144.pdf) and also one-stage detector [RetinaNet](https://arxiv.org/pdf/1708.02002.pdf). The implementation details can be viewed in the repository.
 
-The key of our approach is to let each proposal predict a set of instances that might be highly overlapped rather than a single one in previous proposal-based frameworks. With this scheme, the predictions of nearby proposals are expected to infer the **same set** of instances, rather than **distinguishing individuals**, which is much easy to be learned. Equipped with new techniques such as EMD Loss and Set NMS, our detector can effectively handle the difficulty of detecting highly overlapped objects.
 
-The network structure and results are shown here:
+The model structure and results are shown here:
 
 <img width=60% src="https://github.com/Purkialo/images/blob/master/CrowdDet_arch.jpg"/>
 <img width=90% src="https://github.com/Purkialo/images/blob/master/CrowdDet_demo.jpg"/>
@@ -28,56 +28,48 @@ year = {2020}
 
 # Run
 1. Requirements:
-    * python3.6.9, MegEngine 0.3.1, cuda10.0
+    * python 3.6.8, pytorch 1.5.0, torchvision 0.6.0, cuda 10.1
 
 2. CrowdHuman data:
-    * CrowdHuman is a benchmark dataset to better evaluate detectors in crowd scenarios. The dataset can be downloaded from http://www.crowdhuman.org/. The path of the dataset is set in `config.py`.
+    * CrowdHuman is a benchmark dataset containing highly overlapped objects to better evaluate whether a detector can better handle crowd scenarios. The dataset can be downloaded from http://www.crowdhuman.org/. The path of the dataset is set in `config.py`.
 
-3. Compile gpu_nms library：
-	```
-	cd lib/layers
-	sh ./setup.sh
-	```
-	* Please note that in some environments you may need to modify setup.sh!
-
-4. Inference (GPU required):
-	```
-	cd model/emd_simple
-	python3 inference.py -r path/to/meg_emd_simple.pkl -i ../../assets/running_1.jpg
-	```
-	you will get `result.jpg` like this
-	<img width=60% src="assets/result_1.jpg"/>
-
-5. Steps to train and test:
+3. Steps to run:
     * Step1:  training. More training and testing settings can be set in `config.py`.
-	```
-	python3 train.py
-	```
+    ```
+    cd ROOT_DIR/model/DETECTOR_NAME/OWNER_NAME/project
+    ```
     
-	* Step2:  testing. If you have multiple GPUs, you can use ` -d 2 ` to use more GPUs.
-	```
-	python3 test.py -r 30
-	```
+    * Step2:  testing. If you have four GPUs, you can use ` -d 0-NUM_GPUS ` to use all of your GPUs.
+              NUM_GPUS is the number of GPUs you would lik to use during inference,
+              The result json file will be saved in the corresponding directory automatically.
+    ```
+    cd ROOT_DIR/model/DETECTOR_NAME/OWNER_NAME/project
+    python3 test_net.py -d 0-NUM_GPUS -r 40 -e 50
+    ```
     
-	* Step3:  evaluating.
-	```
-	python3 .evaluate/compute_APMR.py --detfile ./model/crowd_emd_simple/outputs/eval_dump/dump-30.json --target_key 'box'
-	python3 .evaluate/compute_JI.py --detfile ./model/crowd_emd_simple/outputs/eval_dump/dump-30.json --target_key 'box'
-	```
+    * Step3:  evaluating json, inference one picture and visulization json file. All of the value correpsponding the different evalutation metric will be calculated and be saved in a log file
+    ```
+    cd ROOT_DIR/model/DETECTOR_NAME/OWNER_NAME/project
+    python3 demo.py
+    ```
 
 # Models
 
-We use pre-trained model from MegEngine ModelHub: https://data.megengine.org.cn/models/weights/resnet50_fbaug_76254_4e14b7d1.pkl. (or [resnet50_fbaug_76254_4e14b7d1.pkl](https://drive.google.com/open?id=1ojiRJy3I-Xp8AzZRYLgdMQRsR-ETMXaT))
+This proiect is a re-implementation based on Pytorch.
+We use pre-trained model from [MegEngine Model Hub](https://megengine.org.cn/model-hub) and convert this model to pytorch. You can get this model from [GoogleDrive](https://drive.google.com/file/d/1lfYQHC63oM2Dynbfj6uD7XnpDIaA5kNr/view?usp=sharing) or [Baidu Netdisk](https://pan.baidu.com/s/1U3I-qNIrXuYQzUEDDdISTw)(code:yx46).
+| Model | Top1 acc | Top5 acc |
+| --- | --- | --- |
+| ResNet50 | 76.254 | 93.056 |
 
-All models are based on ResNet-50 FPN.
-| | AP | MR | JI | Model
+All models are re-trained based on [ResNet-50](https://arxiv.org/pdf/1512.03385.pdf).
+
+| | mAP | mMR | mJI | Model
 | --- | --- | --- | --- | --- |
-| FPN Baseline | 0.8662 | 0.4227 | 0.7957 | [meg_fpn_baseline.pkl](https://drive.google.com/open?id=1hiifwSNIDNcg46lIqpCS_-MaJDPfH9uj)|
-| EMD Simple | 0.8996 | 0.4171 | 0.8223 | [meg_emd_simple.pkl](https://drive.google.com/open?id=1J6dlER_WkzGD0hjdvwjQDbHqpswOQoQy)|
-| EMD with RM | 0.9034 | 0.4110 | 0.8273 | [meg_emd_refine.pkl](https://drive.google.com/open?id=1VyFFKcY4Lu6KabHtLeAAnIdzySSHiESH) |
-| Cascade FPN Baseline | 0.8624 | 0.4016 | 0.8037 | [meg_cas_fpn.pkl](https://drive.google.com/file/d/16XQdDL5cZd4FCCwAbfMi2IFQ3SN0Dbaw/view?usp=sharing)|
-| Cascade EMD Simple | 0.9064 | 0.3865 | 0.8392 | [meg_cas_emd.pkl](https://drive.google.com/file/d/1Uy5gnGAU18TcCWEToc9t2uvMhuPd__dF/view?usp=sharing)|
-
-# Contact
-
-If you have any questions, please do not hesitate to contact Xuangeng Chu (xg_chu@pku.edu.cn).
+| RCNN FPN Baseline | 0.8708 | 0.4262 | 0.7973 | [rcnn_fpn_baseline.pth](https://drive.google.com/file/d/1WxC8HWOc89nFCvPmHDGPtRoFeoc-IXts/view?usp=sharing) |
+| RCNN EMD Simple   | 0.9027 | 0.4208 | 0.8246 | [rcnn_emd_simple.pth](https://drive.google.com/file/d/1S8nHUM3smevg3UJQ_5hXGQm_E4_xkOsG/view?usp=sharing) |
+| RCNN EMD with RM  | 0.9041 | 0.4145 | 0.8251 | [rcnn_emd_refine.pth](https://drive.google.com/file/d/1OnHAN0RktBeYiZqAZqlb3yFFE8lVU-cG/view?usp=sharing) |
+| Cascade FPN RCNN Baseline    | 0.8677 | 0.4065 | 0.8038 | [cascade_rcnn_fpn_baseline.pth](https://drive.google.com/file/d/1A7kczuz34gdzZqhsGnSzLbV84LYddTlF/view?usp=sharing) |
+| Cascade FPN RCNN EMD Simple  | 0.9048 | 0.4022 | 0.8314 | [cascade_rcnn_emd_simple.pth](https://drive.google.com/file/d/1dCDN5ntfSm_940O2pe7spQ20u2sjVhZ5/view?usp=sharing) |
+| Cascade FPN RCNN EMD with RM | 0.9047 | 0.3987 | 0.8272 | [cascade_rcnn_emd_refine.pth](https://drive.google.com/file/d/1WtpH4WZmqdFoGyyhQ-hda213QmhNXWVz/view?usp=sharing) |
+| RetinaNet FPN Baseline | 0.8793 | 0.4753 | 0.7729 | [retinanet_baseline.pth](https://drive.google.com/file/d/10oYq6gjcW8UQysZK5lML0ahWBzH-yHBS/view?usp=sharing) |
+| RetinaNet Simple       | 0.8988 | 0.4779 | 0.7931 | [retinanet_simple.pth](https://drive.google.com/file/d/10oYq6gjcW8UQysZK5lML0ahWBzH-yHBS/view?usp=sharing)
