@@ -1,0 +1,52 @@
+epoch-32.human
+dtboxes:
+mAP:0.8716, mMR:0.4268, 
+score_thr:0.000, mean_ratio:0.6268, mean_cover:0.6580, mean_recall:0.9356, mean_noise:0.3420, valids:90173, total:152774, gtn:98846
+score_thr:0.100, mean_ratio:0.6824, mean_cover:0.7251, mean_recall:0.9246, mean_noise:0.2749, valids:89084, total:134143, gtn:98800
+score_thr:0.200, mean_ratio:0.7338, mean_cover:0.7935, mean_recall:0.9088, mean_noise:0.2065, valids:87414, total:117111, gtn:98741
+score_thr:0.300, mean_ratio:0.7614, mean_cover:0.8355, mean_recall:0.8962, mean_noise:0.1645, valids:86052, total:107876, gtn:98669
+score_thr:0.400, mean_ratio:0.7796, mean_cover:0.8669, mean_recall:0.8853, mean_noise:0.1331, valids:84784, total:101488, gtn:98599
+score_thr:0.500, mean_ratio:0.7904, mean_cover:0.8904, mean_recall:0.8745, mean_noise:0.1096, valids:83431, total:96323, gtn:98520
+score_thr:0.600, mean_ratio:0.7964, mean_cover:0.9110, mean_recall:0.8626, mean_noise:0.0890, valids:81957, total:91840, gtn:98430
+score_thr:0.700, mean_ratio:0.7983, mean_cover:0.9297, mean_recall:0.8485, mean_noise:0.0703, valids:80119, total:87418, gtn:98307
+score_thr:0.800, mean_ratio:0.7937, mean_cover:0.9480, mean_recall:0.8287, mean_noise:0.0520, valids:77508, total:82529, gtn:98123
+score_thr:0.900, mean_ratio:0.7728, mean_cover:0.9682, mean_recall:0.7917, mean_noise:0.0318, valids:72573, total:75232, gtn:97740
+epoch-33.human
+dtboxes:
+mAP:0.8704, mMR:0.4277, 
+score_thr:0.000, mean_ratio:0.6294, mean_cover:0.6618, mean_recall:0.9342, mean_noise:0.3382, valids:90026, total:151250, gtn:98839
+score_thr:0.100, mean_ratio:0.6852, mean_cover:0.7292, mean_recall:0.9229, mean_noise:0.2708, valids:88916, total:132878, gtn:98794
+score_thr:0.200, mean_ratio:0.7356, mean_cover:0.7973, mean_recall:0.9065, mean_noise:0.2027, valids:87220, total:116198, gtn:98724
+score_thr:0.300, mean_ratio:0.7627, mean_cover:0.8381, mean_recall:0.8947, mean_noise:0.1619, valids:85877, total:107208, gtn:98649
+score_thr:0.400, mean_ratio:0.7800, mean_cover:0.8690, mean_recall:0.8836, mean_noise:0.1310, valids:84598, total:100879, gtn:98585
+score_thr:0.500, mean_ratio:0.7904, mean_cover:0.8919, mean_recall:0.8732, mean_noise:0.1081, valids:83279, total:95869, gtn:98500
+score_thr:0.600, mean_ratio:0.7964, mean_cover:0.9124, mean_recall:0.8612, mean_noise:0.0876, valids:81803, total:91454, gtn:98416
+score_thr:0.700, mean_ratio:0.7984, mean_cover:0.9316, mean_recall:0.8470, mean_noise:0.0684, valids:79985, total:87069, gtn:98305
+score_thr:0.800, mean_ratio:0.7934, mean_cover:0.9490, mean_recall:0.8275, mean_noise:0.0510, valids:77329, total:82232, gtn:98121
+score_thr:0.900, mean_ratio:0.7729, mean_cover:0.9687, mean_recall:0.7915, mean_noise:0.0313, valids:72499, total:75115, gtn:97733
+epoch-34.human
+dtboxes:
+mAP:0.8699, mMR:0.4274, 
+score_thr:0.000, mean_ratio:0.6355, mean_cover:0.6685, mean_recall:0.9338, mean_noise:0.3315, valids:89880, total:148557, gtn:98831
+score_thr:0.100, mean_ratio:0.6899, mean_cover:0.7348, mean_recall:0.9219, mean_noise:0.2652, valids:88712, total:130908, gtn:98781
+score_thr:0.200, mean_ratio:0.7401, mean_cover:0.8021, mean_recall:0.9064, mean_noise:0.1979, valids:87120, total:115025, gtn:98713
+score_thr:0.300, mean_ratio:0.7654, mean_cover:0.8419, mean_recall:0.8942, mean_noise:0.1581, valids:85748, total:106324, gtn:98643
+score_thr:0.400, mean_ratio:0.7822, mean_cover:0.8718, mean_recall:0.8834, mean_noise:0.1282, valids:84517, total:100254, gtn:98570
+score_thr:0.500, mean_ratio:0.7926, mean_cover:0.8949, mean_recall:0.8730, mean_noise:0.1051, valids:83187, total:95372, gtn:98484
+score_thr:0.600, mean_ratio:0.7978, mean_cover:0.9141, mean_recall:0.8612, mean_noise:0.0859, valids:81715, total:91128, gtn:98401
+score_thr:0.700, mean_ratio:0.7986, mean_cover:0.9320, mean_recall:0.8467, mean_noise:0.0680, valids:79894, total:86905, gtn:98289
+score_thr:0.800, mean_ratio:0.7936, mean_cover:0.9496, mean_recall:0.8274, mean_noise:0.0504, valids:77318, total:82155, gtn:98103
+score_thr:0.900, mean_ratio:0.7725, mean_cover:0.9688, mean_recall:0.7910, mean_noise:0.0312, valids:72406, total:75006, gtn:97713
+epoch-35.human
+dtboxes:
+mAP:0.8704, mMR:0.4290, 
+score_thr:0.000, mean_ratio:0.6307, mean_cover:0.6629, mean_recall:0.9343, mean_noise:0.3371, valids:89988, total:150501, gtn:98825
+score_thr:0.100, mean_ratio:0.6855, mean_cover:0.7295, mean_recall:0.9226, mean_noise:0.2705, valids:88829, total:132329, gtn:98781
+score_thr:0.200, mean_ratio:0.7370, mean_cover:0.7983, mean_recall:0.9069, mean_noise:0.2017, valids:87206, total:115926, gtn:98715
+score_thr:0.300, mean_ratio:0.7631, mean_cover:0.8386, mean_recall:0.8947, mean_noise:0.1614, valids:85863, total:107059, gtn:98647
+score_thr:0.400, mean_ratio:0.7807, mean_cover:0.8690, mean_recall:0.8842, mean_noise:0.1310, valids:84637, total:100839, gtn:98582
+score_thr:0.500, mean_ratio:0.7913, mean_cover:0.8927, mean_recall:0.8735, mean_noise:0.1073, valids:83334, total:95851, gtn:98498
+score_thr:0.600, mean_ratio:0.7970, mean_cover:0.9121, mean_recall:0.8620, mean_noise:0.0879, valids:81889, total:91559, gtn:98416
+score_thr:0.700, mean_ratio:0.7982, mean_cover:0.9305, mean_recall:0.8475, mean_noise:0.0695, valids:80023, total:87175, gtn:98310
+score_thr:0.800, mean_ratio:0.7937, mean_cover:0.9483, mean_recall:0.8284, mean_noise:0.0517, valids:77453, total:82377, gtn:98120
+score_thr:0.900, mean_ratio:0.7727, mean_cover:0.9680, mean_recall:0.7916, mean_noise:0.0320, valids:72561, total:75210, gtn:97751
